@@ -40,9 +40,19 @@ withCategory(Category.PLAYER, ({ hack, toggle }) => {
         success("Your account is now maxed out.")
     })
     hack("Set Gold", "Set's the amount of gold you have currently.", async (hack, player) => {
-        const value = await InputTypes.integer("Please enter the amount of gold you want to get.", 1, 9000000)
-        player.data.gold = value
-        success(`You now have ${value} gold.`)
+        const value = await InputTypes.integer("Please enter the amount of gold you want to get.")
+        if (value > 9000000) {
+            const confirmed = await confirm("You are about to go above the max limit. This could destroy your account in ways we do not know.")
+            if (confirmed) {
+                player.data.gold = value;
+                success(`You now have ${value} gold.`)
+            } else {
+                error('Canceled by user')
+            }
+        } else {
+            player.data.gold = value
+            success(`You now have ${value} gold.`)
+        }
     })
     hack("Set Level", "Set's the level of your player.", async (hack, player) => {
         const value = await InputTypes.integer("Please enter the level you want to be.", 1, 100)
